@@ -1,19 +1,17 @@
-use libcnb::build::BuildContext;
 use libcnb::data::launch::{Launch, Process};
-use libcnb::generic::GenericPlatform;
 use libcnb::layer_lifecycle::execute_layer_lifecycle;
-use libcnb::LibCnbError;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
 use crate::layers::bundle::BundleLayerLifecycle;
 use crate::layers::opt::OptLayerLifecycle;
 use crate::layers::runtime::RuntimeLayerLifecycle;
 use crate::JvmFunctionInvokerBuildpackMetadata;
+use libcnb::{BuildContext, GenericPlatform};
 use std::path::PathBuf;
 
 pub fn build(
     context: BuildContext<GenericPlatform, JvmFunctionInvokerBuildpackMetadata>,
-) -> Result<(), LibCnbError<JvmFunctionInvokerBuildpackError>> {
+) -> Result<(), libcnb::Error<JvmFunctionInvokerBuildpackError>> {
     let run_sh_path: PathBuf = execute_layer_lifecycle("opt", OptLayerLifecycle {}, &context)?;
 
     let runtime_jar_path: PathBuf =

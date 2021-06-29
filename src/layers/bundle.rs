@@ -2,18 +2,17 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use libcnb::build::BuildContext;
-use libcnb::data::layer::LayerContentMetadata;
-use libcnb::generic::{GenericLayerLifecycleOutput, GenericMetadata, GenericPlatform};
+use libcnb::data::layer_content_metadata::LayerContentMetadata;
 use libcnb::layer_lifecycle::LayerLifecycle;
+use libcnb::{read_toml_file, TomlFileError};
+use libcnb::{BuildContext, GenericMetadata, GenericPlatform};
+use serde::Deserialize;
 use thiserror::Error;
+use toml::value::Table;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
 use crate::heroku_shared_lib::log::{log_header, log_info};
 use crate::JvmFunctionInvokerBuildpackMetadata;
-use libcnb::shared::{read_toml_file, TomlFileError};
-use serde::Deserialize;
-use toml::value::Table;
 
 pub struct BundleLayerLifecycle {
     pub invoker_jar_path: PathBuf,
@@ -62,7 +61,7 @@ impl
         }
     }
 
-    fn output_data(
+    fn layer_lifecycle_data(
         &self,
         path: &Path,
         layer_content_metadata: LayerContentMetadata<GenericMetadata>,

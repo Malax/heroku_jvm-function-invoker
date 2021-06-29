@@ -2,10 +2,9 @@ use std::fs;
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 
-use libcnb::build::BuildContext;
-use libcnb::data::layer::LayerContentMetadata;
-use libcnb::generic::{GenericLayerLifecycleOutput, GenericMetadata, GenericPlatform};
+use libcnb::data::layer_content_metadata::LayerContentMetadata;
 use libcnb::layer_lifecycle::LayerLifecycle;
+use libcnb::{BuildContext, GenericMetadata, GenericPlatform};
 use thiserror::Error;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
@@ -36,10 +35,10 @@ impl
         fs::set_permissions(&destination, fs::Permissions::from_mode(0o755))
             .map_err(OptLayerError::CouldNotSetExecutableBitForRunSh)?;
 
-        Ok(LayerContentMetadata::default().launch(true).build(true))
+        Ok(LayerContentMetadata::default().launch(true))
     }
 
-    fn output_data(
+    fn layer_lifecycle_data(
         &self,
         path: &Path,
         layer_content_metadata: LayerContentMetadata<GenericMetadata>,

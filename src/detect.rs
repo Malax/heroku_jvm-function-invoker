@@ -1,31 +1,39 @@
 use std::path::PathBuf;
 
 use libcnb::data::build_plan::BuildPlanBuilder;
-use libcnb::detect::{DetectContext, DetectResult};
-use libcnb::generic::GenericPlatform;
-use libcnb::LibCnbError;
+use libcnb::{
+    read_toml_file, DetectContext, DetectOutcome, Error, GenericBuildContext, GenericDetectContext,
+    GenericPlatform, TomlFileError,
+};
+use toml::value::Table;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
 use crate::JvmFunctionInvokerBuildpackMetadata;
-use libcnb::shared::{read_toml_file, TomlFileError};
-use toml::value::Table;
+
+pub fn detect2(context: GenericDetectContext) -> Result<DetectOutcome, Error<std::io::Error>> {
+    Ok(DetectOutcome::Fail)
+}
+
+pub fn build(context: GenericBuildContext) -> Result<(), Error<std::io::Error>> {
+    Ok(())
+}
 
 pub fn detect(
     context: DetectContext<GenericPlatform, JvmFunctionInvokerBuildpackMetadata>,
-) -> Result<DetectResult, LibCnbError<JvmFunctionInvokerBuildpackError>> {
+) -> Result<DetectOutcome, Error<JvmFunctionInvokerBuildpackError>> {
     let function_toml_path = context.app_dir.join("function.toml");
     let project_toml_path = context.app_dir.join("project.toml");
 
     if function_toml_path.exists() || project_toml_declares_salesforce_function(project_toml_path)?
     {
-        Ok(DetectResult::Pass(
+        Ok(DetectOutcome::Pass(
             BuildPlanBuilder::new()
                 .requires("jdk")
                 .requires("jvm-application")
                 .build(),
         ))
     } else {
-        Ok(DetectResult::Fail)
+        Ok(DetectOutcome::Fail)
     }
 }
 

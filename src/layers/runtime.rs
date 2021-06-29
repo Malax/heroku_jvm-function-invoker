@@ -1,8 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use libcnb::build::BuildContext;
-use libcnb::data::layer::LayerContentMetadata;
-use libcnb::generic::{GenericLayerLifecycleOutput, GenericPlatform};
+use libcnb::data::layer_content_metadata::LayerContentMetadata;
 use libcnb::layer_lifecycle::{LayerLifecycle, ValidateResult};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -12,6 +10,7 @@ use crate::heroku_shared_lib::log::{log_error, log_header, log_info};
 use crate::heroku_shared_lib::util;
 use crate::heroku_shared_lib::util::DownloadError;
 use crate::JvmFunctionInvokerBuildpackMetadata;
+use libcnb::{BuildContext, GenericPlatform};
 
 pub struct RuntimeLayerLifecycle {}
 
@@ -71,7 +70,7 @@ impl
         }
     }
 
-    fn output_data(
+    fn layer_lifecycle_data(
         &self,
         path: &Path,
         layer_content_metadata: LayerContentMetadata<RuntimeLayerMetadata>,

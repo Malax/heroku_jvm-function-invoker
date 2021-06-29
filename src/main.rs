@@ -1,13 +1,12 @@
 use std::fmt::Debug;
 
-use libcnb::runtime::cnb_runtime;
-use libcnb::LibCnbError;
+use libcnb::cnb_runtime;
 use serde::Deserialize;
 
-use crate::error::JvmFunctionInvokerBuildpackErrorHandler;
+use crate::error::handle_buildpack_error;
+use crate::heroku_shared_lib::error::HerokuBuildpackErrorHandler;
 use crate::layers::bundle::BundleLayerError;
 use crate::layers::runtime::RuntimeLayerError;
-use libcnb::error::BuildpackErrorHandle;
 
 mod build;
 mod detect;
@@ -19,7 +18,7 @@ fn main() {
     cnb_runtime(
         detect::detect,
         build::build,
-        JvmFunctionInvokerBuildpackErrorHandler {},
+        HerokuBuildpackErrorHandler::new(Box::new(handle_buildpack_error)),
     );
 }
 
