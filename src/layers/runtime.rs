@@ -6,11 +6,9 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
-use crate::heroku_shared_lib::log::{log_error, log_header, log_info};
-use crate::heroku_shared_lib::util;
-use crate::heroku_shared_lib::util::DownloadError;
 use crate::JvmFunctionInvokerBuildpackMetadata;
 use libcnb::{BuildContext, GenericPlatform};
+use libherokubuildpack::{log_header, log_info, DownloadError, download_file, sha256};
 
 pub struct RuntimeLayerLifecycle {}
 
@@ -32,7 +30,7 @@ impl
 
         log_info("Starting download of function runtime");
 
-        util::download_file(
+        download_file(
             &context.buildpack_descriptor.metadata.runtime.url,
             &runtime_jar_path,
         )
@@ -41,7 +39,7 @@ impl
         log_info("Function runtime download successful");
 
         let actual_runtime_jar_sha256 =
-            util::sha256(&runtime_jar_path).map_err(RuntimeLayerError::RuntimeChecksumFailed)?;
+            sha256(&runtime_jar_path).map_err(RuntimeLayerError::RuntimeChecksumFailed)?;
 
         if actual_runtime_jar_sha256 == context.buildpack_descriptor.metadata.runtime.sha256 {
             Ok(LayerContentMetadata::default()
@@ -73,7 +71,7 @@ impl
     fn layer_lifecycle_data(
         &self,
         path: &Path,
-        layer_content_metadata: LayerContentMetadata<RuntimeLayerMetadata>,
+        _layer_content_metadata: LayerContentMetadata<RuntimeLayerMetadata>,
     ) -> Result<PathBuf, JvmFunctionInvokerBuildpackError> {
         Ok(path.join("sf-fx-runtime-java.jar"))
     }

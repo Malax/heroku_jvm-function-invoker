@@ -8,11 +8,10 @@ use libcnb::{read_toml_file, TomlFileError};
 use libcnb::{BuildContext, GenericMetadata, GenericPlatform};
 use serde::Deserialize;
 use thiserror::Error;
-use toml::value::Table;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
-use crate::heroku_shared_lib::log::{log_header, log_info};
 use crate::JvmFunctionInvokerBuildpackMetadata;
+use libherokubuildpack::{log_header, log_info};
 
 pub struct BundleLayerLifecycle {
     pub invoker_jar_path: PathBuf,
@@ -47,7 +46,7 @@ impl
 
         match exit_status.code() {
             Some(0) => {
-                log_function_metadata(&path);
+                log_function_metadata(&path)?;
 
                 Ok(LayerContentMetadata::default()
                     .launch(true)
@@ -64,7 +63,7 @@ impl
     fn layer_lifecycle_data(
         &self,
         path: &Path,
-        layer_content_metadata: LayerContentMetadata<GenericMetadata>,
+        _layer_content_metadata: LayerContentMetadata<GenericMetadata>,
     ) -> Result<PathBuf, JvmFunctionInvokerBuildpackError> {
         Ok(path.to_path_buf())
     }

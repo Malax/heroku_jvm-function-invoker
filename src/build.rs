@@ -1,13 +1,14 @@
+use std::path::PathBuf;
+
+use libcnb::{BuildContext, GenericPlatform};
 use libcnb::data::launch::{Launch, Process};
 use libcnb::layer_lifecycle::execute_layer_lifecycle;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
+use crate::JvmFunctionInvokerBuildpackMetadata;
 use crate::layers::bundle::BundleLayerLifecycle;
 use crate::layers::opt::OptLayerLifecycle;
 use crate::layers::runtime::RuntimeLayerLifecycle;
-use crate::JvmFunctionInvokerBuildpackMetadata;
-use libcnb::{BuildContext, GenericPlatform};
-use std::path::PathBuf;
 
 pub fn build(
     context: BuildContext<GenericPlatform, JvmFunctionInvokerBuildpackMetadata>,
@@ -35,7 +36,9 @@ pub fn build(
         false,
     )?);
 
-    context.write_launch(launch);
+    context
+        .write_launch(launch)
+        .map_err(JvmFunctionInvokerBuildpackError::CouldNotWriteLaunchToml)?;
 
     Ok(())
 }

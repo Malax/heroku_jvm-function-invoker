@@ -5,7 +5,6 @@ use std::path::{Path, PathBuf};
 use libcnb::data::layer_content_metadata::LayerContentMetadata;
 use libcnb::layer_lifecycle::LayerLifecycle;
 use libcnb::{BuildContext, GenericMetadata, GenericPlatform};
-use thiserror::Error;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
 use crate::JvmFunctionInvokerBuildpackMetadata;
@@ -41,7 +40,7 @@ impl
     fn layer_lifecycle_data(
         &self,
         path: &Path,
-        layer_content_metadata: LayerContentMetadata<GenericMetadata>,
+        _layer_content_metadata: LayerContentMetadata<GenericMetadata>,
     ) -> Result<PathBuf, JvmFunctionInvokerBuildpackError> {
         Ok(path.join("run.sh"))
     }

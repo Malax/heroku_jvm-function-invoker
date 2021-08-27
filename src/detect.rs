@@ -1,22 +1,11 @@
 use std::path::PathBuf;
 
 use libcnb::data::build_plan::BuildPlanBuilder;
-use libcnb::{
-    read_toml_file, DetectContext, DetectOutcome, Error, GenericBuildContext, GenericDetectContext,
-    GenericPlatform, TomlFileError,
-};
+use libcnb::{read_toml_file, DetectContext, DetectOutcome, Error, GenericPlatform, TomlFileError};
 use toml::value::Table;
 
 use crate::error::JvmFunctionInvokerBuildpackError;
 use crate::JvmFunctionInvokerBuildpackMetadata;
-
-pub fn detect2(context: GenericDetectContext) -> Result<DetectOutcome, Error<std::io::Error>> {
-    Ok(DetectOutcome::Fail)
-}
-
-pub fn build(context: GenericBuildContext) -> Result<(), Error<std::io::Error>> {
-    Ok(())
-}
 
 pub fn detect(
     context: DetectContext<GenericPlatform, JvmFunctionInvokerBuildpackMetadata>,
